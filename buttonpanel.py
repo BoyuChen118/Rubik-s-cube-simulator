@@ -1,6 +1,6 @@
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
-class buttonpanel(GridLayout):  # all ways user can interact with the cube is added
+class buttonpanel(GridLayout):  # all ways user can interact with the cube is in the buttonpanel
     def __init__(self,cube,**kwargs):
         super(buttonpanel,self).__init__(**kwargs)
         self.cols = 2
@@ -42,7 +42,7 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is ad
             self.cube.O[i] = temp
             self.cube.W[i] = temp2
             self.cube.R[i] = temp3
-
+        self.clockwise([6,7,8,3,4,5,0,1,2],4)
         self.cube.reupdate()
 
 
@@ -56,20 +56,46 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is ad
             self.cube.O[i] = temp3
             self.cube.Y[i] = temp2
             self.cube.R[i] = temp
-        self.clockwise([6,7,8,3,4,5,0,1,2],4)
+        self.cclockwise([6,7,8,3,4,5,0,1,2],4)
         self.cube.reupdate()
+
     def bottomcallback(self,instance):
-        pass
+        print("bottom")
+
     def revbottomcallback(self,instance):
         print("revback")
+
     def rightcallback(self,instance):
-        print('right')
+        self.cube.clear_widgets()
+        nums = [2,5,8]
+        y1 = self.cube.Y[0]
+        y2 = self.cube.Y[3]
+        y3 = self.cube.Y[6]
+        for i in nums:
+           temp  = self.cube.B[i]
+           temp2 = self.cube.W[i]
+           temp3 = self.cube.G[i]
+           if i == 2:
+            self.cube.B[i] = y3 
+            self.cube.Y[6] = temp3
+           elif i == 5:
+            self.cube.B[i] = y2
+            self.cube.Y[3] = temp3
+           elif i == 8:
+            self.cube.B[i] = y1
+            self.cube.Y[0] = temp3
+           self.cube.W[i] = temp
+           self.cube.G[i] = temp2
+        self.clockwise([8,5,2,7,4,1,6,3,0],2)
+        self.cube.reupdate()   
     def revrightcallback(self,instance):
         print('revright')
     def leftcallback(self,instance):
         print('right')
+
     def revleftcallback(self,instance):
         print('revright')
+
     def clockwise(self,config,facenum):  
         
         temp = self.cube.faces[facenum][config[1]]
