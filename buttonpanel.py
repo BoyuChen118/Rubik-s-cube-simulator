@@ -89,12 +89,35 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is in
         self.clockwise([8,5,2,7,4,1,6,3,0],2)
         self.cube.reupdate()   
     def revrightcallback(self,instance):
-        print('revright')
+        for i in range (0,3):
+            self.rightbutton.trigger_action(duration = 0.01)
     def leftcallback(self,instance):
-        print('right')
-
+        self.cube.clear_widgets()
+        nums = [0,3,6]
+        y2 = self.cube.Y[2]
+        y5 = self.cube.Y[5]
+        y8 = self.cube.Y[8]
+        for i in nums:
+           temp  = self.cube.B[i]
+           temp2 = self.cube.W[i]
+           temp3 = self.cube.G[i]
+           if i == 0:
+            self.cube.G[i] = y8
+            self.cube.Y[8] = temp
+           elif i == 3:
+            self.cube.G[i] = y5
+            self.cube.Y[5] = temp
+           elif i == 6:
+            self.cube.G[i] = y2
+            self.cube.Y[2] = temp
+           self.cube.W[i] = temp3
+           self.cube.B[i] = temp2
+        self.clockwise([0,3,6,1,4,7,2,5,8],3)
+        self.cube.reupdate()   
+        
     def revleftcallback(self,instance):
-        print('revright')
+        for i in range (0,3):
+            self.leftbutton.trigger_action(duration = 0.01)  # reverse = normal * 3
 
     def clockwise(self,config,facenum):  
         
