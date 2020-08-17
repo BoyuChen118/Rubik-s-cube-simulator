@@ -35,10 +35,10 @@ class cube(GridLayout):
         self.add_widget(cubeface(self.G))
         self.add_widget(buttonpanel(self)) #place holder
         self.add_widget(Label(text='')) #place holder
-class TestApp(App):
+class CubeApp(App):
     def build(self): 
         return cube()
 
 
 if __name__ == '__main__':
-    TestApp().run()
+    CubeApp().run()

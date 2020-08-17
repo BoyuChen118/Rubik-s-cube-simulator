@@ -13,11 +13,11 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is in
         self.revfrontbutton = Button(text = 'F\'',font_size=13,on_press=self.revfrontcallback)
         self.add_widget(self.revfrontbutton)
 
-        self.bottombutton = Button(text = 'B',font_size=13,on_press=self.bottomcallback)
-        self.add_widget(self.bottombutton)
+        self.backbutton = Button(text = 'B',font_size=13,on_press=self.backcallback)
+        self.add_widget(self.backbutton)
 
-        self.revbottombutton = Button(text = 'B\'',font_size=13,on_press=self.revbottomcallback)
-        self.add_widget(self.revbottombutton)
+        self.revbackbutton = Button(text = 'B\'',font_size=13,on_press=self.revbackcallback)
+        self.add_widget(self.revbackbutton)
 
         self.rightbutton = Button(text = 'R',font_size=13,on_press=self.rightcallback)
         self.add_widget(self.rightbutton)
@@ -30,6 +30,18 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is in
 
         self.revleftbutton = Button(text = 'L\'',font_size=13,on_press=self.revleftcallback)
         self.add_widget(self.revleftbutton)
+
+        self.upbutton = Button(text = 'U',font_size=13,on_press=self.upcallback)
+        self.add_widget(self.upbutton)
+
+        self.revupbutton = Button(text = 'U\'',font_size=13,on_press=self.revupcallback)
+        self.add_widget(self.revupbutton)
+
+        self.downbutton = Button(text = 'D',font_size=13,on_press=self.downcallback)
+        self.add_widget(self.downbutton)
+
+        self.revdownbutton = Button(text = 'D\'',font_size=13,on_press=self.revdowncallback)
+        self.add_widget(self.revdownbutton)
         
 
     def frontcallback(self,instance):
@@ -59,11 +71,20 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is in
         self.cclockwise([6,7,8,3,4,5,0,1,2],4)
         self.cube.reupdate()
 
-    def bottomcallback(self,instance):
-        print("bottom")
+    def backcallback(self,instance):
+        self.cube.clear_widgets()
+        for i in range(0,3):
+            temp = self.cube.Y[i]
+            self.cube.Y[i] = self.cube.O[i]
+            self.cube.O[i] = self.cube.W[i]
+            self.cube.W[i] = self.cube.R[i]
+            self.cube.R[i] = temp
+        self.clockwise([2,1,0,5,4,3,8,7,6],5)
+        self.cube.reupdate()
 
-    def revbottomcallback(self,instance):
-        print("revback")
+    def revbackcallback(self,instance):
+       for i in range (0,3):
+            self.backbutton.trigger_action(duration = 0.01)
 
     def rightcallback(self,instance):
         self.cube.clear_widgets()
@@ -118,7 +139,43 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is in
     def revleftcallback(self,instance):
         for i in range (0,3):
             self.leftbutton.trigger_action(duration = 0.01)  # reverse = normal * 3
-
+    
+    def downcallback(self,instance):
+        self.cube.clear_widgets()
+        temp = [self.cube.G[0],self.cube.G[1],self.cube.G[2]]
+        # indexes of squares on each face to be swapped 
+        Gindexes = [0,1,2]  
+        Oindexes = [6,3,0]
+        Bindexes = [8,7,6]
+        Rindexes = [2,5,8]
+        for i in range(0,3):
+            self.cube.G[Gindexes[i]] = self.cube.R[Rindexes[i]]  
+            self.cube.R[Rindexes[i]] = self.cube.B[Bindexes[i]]
+            self.cube.B[Bindexes[i]] = self.cube.O[Oindexes[i]]
+            self.cube.O[Oindexes[i]] = temp[i]
+        self.clockwise([2,1,0,5,4,3,8,7,6],1)
+        self.cube.reupdate()   
+    def revdowncallback(self,instance):
+        for i in range (0,3):
+            self.downbutton.trigger_action(duration = 0.01)  # reverse = normal * 3
+    def upcallback(self,instance):
+        self.cube.clear_widgets()
+        temp = [self.cube.G[6],self.cube.G[7],self.cube.G[8]]
+        # indexes of squares on each face to be swapped 
+        Gindexes = [6,7,8]  
+        Oindexes = [8,5,2]
+        Bindexes = [2,1,0]
+        Rindexes = [0,3,6]
+        for i in range(0,3):
+            self.cube.G[Gindexes[i]] = self.cube.O[Oindexes[i]] 
+            self.cube.O[Oindexes[i]] = self.cube.B[Bindexes[i]]
+            self.cube.B[Bindexes[i]] = self.cube.R[Rindexes[i]]
+            self.cube.R[Rindexes[i]] = temp[i]
+        self.clockwise([2,1,0,5,4,3,8,7,6],0)
+        self.cube.reupdate()   
+    def revupcallback(self,instance):
+        for i in range (0,3):
+            self.upbutton.trigger_action(duration = 0.01)  # reverse = normal * 3
     def clockwise(self,config,facenum):  
         
         temp = self.cube.faces[facenum][config[1]]
