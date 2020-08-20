@@ -63,8 +63,8 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is in
         self.add_widget(self.revdownbutton)
         self.buttons.append(self.revdownbutton)
 
-        self.solvebutton = Button(text = 'solve',font_size=13,on_press=self.solve)
-        self.add_widget(self.solvebutton)
+        # self.solvebutton = Button(text = 'solve',font_size=13,on_press=self.solve)
+        # self.add_widget(self.solvebutton)
 
         self.scramblebutton = Button(text = 'scramble',font_size=13,on_press=self.scramble)
         self.add_widget(self.scramblebutton)
@@ -297,18 +297,18 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is in
     #         self.evolvemove = Clock.schedule_interval(lambda dt:self.evolvegenome(genomes[self.count],networks[self.count]),0)
     #         self.count += 1
        
-    def eval_genomes(self,genomes,config):
-        self.count = 5  # keep tracks of which genome the simulation is on
-        ges = []  # genomes and corresponding networks stored in list
-        networks = []
-        self.genomelength = len(genomes)
-        for genome_id, genome in genomes:
-            network = neat.nn.feed_forward.FeedForwardNetwork.create(genome,config)
-            genome.fitness = 0 # initize all genome to have 0 fitness
-            ges.append(genome)
-            networks.append(network)
-        print(self.genomelength)
-        self.solvemove = Clock.schedule_interval(lambda dt: self.evolvegenome(ges[0],networks[0]),0)
+    # def eval_genomes(self,genomes,config):
+    #     self.count = 5  # keep tracks of which genome the simulation is on
+    #     ges = []  # genomes and corresponding networks stored in list
+    #     networks = []
+    #     self.genomelength = len(genomes)
+    #     for genome_id, genome in genomes:
+    #         network = neat.nn.feed_forward.FeedForwardNetwork.create(genome,config)
+    #         genome.fitness = 0 # initize all genome to have 0 fitness
+    #         ges.append(genome)
+    #         networks.append(network)
+    #     print(self.genomelength)
+    #     self.solvemove = Clock.schedule_interval(lambda dt: self.evolvegenome(ges[0],networks[0]),0)
             # while not self.firststepdone():   # while daisy is incomplete
             #     output = network.activate(observation)  # output is a list of output node
             #     for i in range(0,8):
@@ -332,8 +332,8 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is in
     #     winner = p.run(self.eval_genomes, 3)
 
 
-    def solve(self,instance):  
-        self.cube.trainer.solve()
+    # def solve(self,instance):  
+    #     self.cube.trainer.solve()
         # local_dir = os.path.dirname(__file__)
         # config_path = os.path.join(local_dir, 'config-feedforward.txt')
         # self.run(config_path)
