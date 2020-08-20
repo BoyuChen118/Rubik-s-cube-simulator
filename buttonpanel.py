@@ -1,47 +1,73 @@
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
+import os
+import neat
+import time,math
+from random import randint
+from kivy.clock import Clock
 class buttonpanel(GridLayout):  # all ways user can interact with the cube is in the buttonpanel
     def __init__(self,cube,**kwargs):
         super(buttonpanel,self).__init__(**kwargs)
         self.cols = 2
         self.padding = [15,15,15,15]
         self.cube = cube
+        self.buttons = []
+        self.scrammove= None
+        self.count = 0
+        self.solvemove = None
         self.frontbutton = Button(text = 'F',font_size=13,on_press=self.frontcallback)
-
         self.add_widget(self.frontbutton)
+        self.buttons.append(self.frontbutton)
 
         self.revfrontbutton = Button(text = 'F\'',font_size=13,on_press=self.revfrontcallback)
         self.add_widget(self.revfrontbutton)
+        self.buttons.append(self.revfrontbutton)
 
         self.backbutton = Button(text = 'B',font_size=13,on_press=self.backcallback)
         self.add_widget(self.backbutton)
+        self.buttons.append(self.backbutton)
 
         self.revbackbutton = Button(text = 'B\'',font_size=13,on_press=self.revbackcallback)
         self.add_widget(self.revbackbutton)
+        self.buttons.append(self.revbackbutton)
 
         self.rightbutton = Button(text = 'R',font_size=13,on_press=self.rightcallback)
         self.add_widget(self.rightbutton)
+        self.buttons.append(self.rightbutton)
 
         self.revrightbutton = Button(text = 'R\'',font_size=13,on_press=self.revrightcallback)
         self.add_widget(self.revrightbutton)
+        self.buttons.append(self.revrightbutton)
 
         self.leftbutton = Button(text = 'L',font_size=13,on_press=self.leftcallback)
         self.add_widget(self.leftbutton)
+        self.buttons.append(self.leftbutton)
 
         self.revleftbutton = Button(text = 'L\'',font_size=13,on_press=self.revleftcallback)
         self.add_widget(self.revleftbutton)
+        self.buttons.append(self.revleftbutton)
 
         self.upbutton = Button(text = 'U',font_size=13,on_press=self.upcallback)
         self.add_widget(self.upbutton)
+        self.buttons.append(self.upbutton)
 
         self.revupbutton = Button(text = 'U\'',font_size=13,on_press=self.revupcallback)
         self.add_widget(self.revupbutton)
+        self.buttons.append(self.revupbutton)
 
         self.downbutton = Button(text = 'D',font_size=13,on_press=self.downcallback)
         self.add_widget(self.downbutton)
+        self.buttons.append(self.downbutton)
 
         self.revdownbutton = Button(text = 'D\'',font_size=13,on_press=self.revdowncallback)
         self.add_widget(self.revdownbutton)
+        self.buttons.append(self.revdownbutton)
+
+        self.solvebutton = Button(text = 'solve',font_size=13,on_press=self.solve)
+        self.add_widget(self.solvebutton)
+
+        self.scramblebutton = Button(text = 'scramble',font_size=13,on_press=self.scramble)
+        self.add_widget(self.scramblebutton)
         
 
     def frontcallback(self,instance):
@@ -108,7 +134,7 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is in
            self.cube.W[i] = temp
            self.cube.G[i] = temp2
         self.clockwise([8,5,2,7,4,1,6,3,0],2)
-        self.cube.reupdate()   
+        self.cube.reupdate()
     def revrightcallback(self,instance):
         for i in range (0,3):
             self.rightbutton.trigger_action(duration = 0.01)
@@ -212,3 +238,102 @@ class buttonpanel(GridLayout):  # all ways user can interact with the cube is in
         self.cube.faces[facenum][config[8]] = temp2
         self.cube.faces[facenum][config[6]] = temp
         self.cube.faces[facenum][config[2]] = temp3
+    def scramble(self,instance): # scrambles the cube
+        self.count = 0 # reset scramble count
+        nummoves = randint(100,200)  # number of scramble steps
+        self.scrammove = Clock.schedule_interval(lambda dt: self.scramblemove(nummoves),0)
+    def scramblemove(self,nummoves):
+        move = randint(0,8)
+        if self.count < nummoves:
+            self.buttons[move].trigger_action()
+            self.count += 1
+        else:
+            self.scrammove.cancel()
+            self.scrammove = None
+    # def firststepdone(self):  # check if the daisy is complete
+    #     indexes = [1]
+    #     for i in indexes:
+    #         if self.cube.faces[0][i] != 'white':
+    #             return False
+    #     return True
+    # def midwhitesquares(self):
+    #     indexes = [1,7]  # indexes of all mid squares
+    #     observation = []
+    #     for faces in self.cube.getfaces():
+    #         for i in indexes:
+    #             if faces[i] == 'white':
+    #                 observation.append(1)  # its 1 if it's a white 
+    #             else:
+    #                 observation.append(0)  # 0 otherwise
+    #     return observation
+    # def value(self):  # see how many petal of the daisy is completed
+    #     total = 0
+    #     indexes = [1,3,5,7]
+    #     for i in indexes:
+    #         if self.cube.faces[0][i] == 'white':
+    #             total += 1
+    #     return total
+    # def evolvegenome(self,genome,network):
+    #     if not self.firststepdone():
+    #         observation = self.midwhitesquares()  # observe where all the middle white squares are 
+    #         prev_value = self.value()
+    #         output = network.activate(observation)
+    #         for i in range(0,8):
+    #             if output[i] > 0.5:
+    #                 self.buttons[i].trigger_action() 
+    #                 genome.fitness += 0.1
+    #                 now_value = self.value()
+    #                 if now_value < prev_value:  # discourage straying away from objective
+    #                     genome.fitness -= 30
+    #                 elif now_value > prev_value:
+    #                     genome.fitness += 1
+    #                 elif now_value == prev_value:
+    #                     genome.fitness -=0.2
+    #     else: 
+    #         self.cube.trainer.terminate()
+
+    # def evolve(self,genomes,networks):
+        
+    #         self.evolvemove = Clock.schedule_interval(lambda dt:self.evolvegenome(genomes[self.count],networks[self.count]),0)
+    #         self.count += 1
+       
+    def eval_genomes(self,genomes,config):
+        self.count = 5  # keep tracks of which genome the simulation is on
+        ges = []  # genomes and corresponding networks stored in list
+        networks = []
+        self.genomelength = len(genomes)
+        for genome_id, genome in genomes:
+            network = neat.nn.feed_forward.FeedForwardNetwork.create(genome,config)
+            genome.fitness = 0 # initize all genome to have 0 fitness
+            ges.append(genome)
+            networks.append(network)
+        print(self.genomelength)
+        self.solvemove = Clock.schedule_interval(lambda dt: self.evolvegenome(ges[0],networks[0]),0)
+            # while not self.firststepdone():   # while daisy is incomplete
+            #     output = network.activate(observation)  # output is a list of output node
+            #     for i in range(0,8):
+            #         if output[i] > 0.5:
+            #             self.buttons[i].trigger_action(duration=0.01) 
+            #             genome.fitness -= 0.5
+            #            # time.sleep(1)
+            # genome.fitness += 10
+                        
+    # def run(self,config_file): # use neat to make a daisy
+    #     configs = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
+    #                      neat.DefaultSpeciesSet, neat.DefaultStagnation,
+    #                      config_file)
+
+    #     p = neat.Population(configs)
+
+    #     p.add_reporter(neat.StdOutReporter(True))
+    #     stats = neat.StatisticsReporter()
+    #     p.add_reporter(stats)
+    #     # select the most fit neural network after 50 generations
+    #     winner = p.run(self.eval_genomes, 3)
+
+
+    def solve(self,instance):  
+        self.cube.trainer.solve()
+        # local_dir = os.path.dirname(__file__)
+        # config_path = os.path.join(local_dir, 'config-feedforward.txt')
+        # self.run(config_path)
